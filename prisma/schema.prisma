@@ -1,11 +1,53 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
 generator client {
   provider = "prisma-client-js"
 }
 
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+model Profile {
+  id String  @id @db.ObjectId  @default(auto()) @map("_id") // Use auto() for MongoDB's ObjectId
+  userId String @unique
+  name String
+  imageUrl String
+  email String
+
+  servers Server[] @relation("ProfileToServer")
+  members Member[] @relation("ProfileToMember")
+  channels Channel[] @relation("ProfileToChannel")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
+model Server{
+  id String @id @db.ObjectId @default(auto()) @map("_id")
+  name String
+  imageUrl String
+  inviteCode String
+  profile Profile @relation(fields:[profileId],references: [id])
+  profileId String @db.ObjectId 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum MemberRole{
+  ADMIN
+  MODERATOR
+  GUEST
+}
+
+model Member{
+  id String @id @db.ObjectId @default(auto()) @map("_id")
+  role MemberRole @default(GUEST)
+  profile Profile @relation(fields: [profileId],references: [id])
+  profileId String @db.ObjectId
+}
+
+// model Channel{
+
+// }
