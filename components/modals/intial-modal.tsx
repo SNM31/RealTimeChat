@@ -22,6 +22,10 @@ import * as z from 'zod'
 import {zodResolver} from '@hookform/resolvers/zod'
 import { log } from 'console'
 
+const timePass=()=>{
+    console.log('do nothing');
+    
+}
 const formSchema=z.object({
     name:z.string().min(1,{
         message:"Server name is required"
@@ -54,7 +58,7 @@ const IntialModal = () => {
                Give your server personality with name and profile image.You can always change it later
               </DialogDescription>
             </DialogHeader>
-            {/* <Form {...form}>
+            <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
                  <div className='space-y-8 px-6'>
                    <div className='flex items-center justify-center text-center '>
@@ -92,10 +96,10 @@ const IntialModal = () => {
                    </Button>
                  </DialogFooter>
                 </form>  
-            </Form> */}
+            </Form>
          </DialogContent>
     </Dialog>  
     );
 }
- 
+
 export default IntialModal;
