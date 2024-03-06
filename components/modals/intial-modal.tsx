@@ -21,11 +21,9 @@ import {useForm} from 'react-hook-form'
 import * as z from 'zod'
 import {zodResolver} from '@hookform/resolvers/zod'
 import { log } from 'console'
+import { useEffect, useState } from 'react'
+import { FileUpload } from '@/components/file-upload'
 
-const timePass=()=>{
-    console.log('do nothing');
-    
-}
 const formSchema=z.object({
     name:z.string().min(1,{
         message:"Server name is required"
@@ -35,6 +33,11 @@ const formSchema=z.object({
     })
 })
 const IntialModal = () => {
+    const [isMounted,setIsMounted]=useState(false)
+    useEffect(()=>{
+        setIsMounted(true)
+    },[])
+
     const form =useForm({
         resolver:zodResolver(formSchema),
         defaultValues:{
@@ -47,6 +50,7 @@ const IntialModal = () => {
        console.log(values);
        
     }
+    if(!isMounted) return null
     return (
     <Dialog open> {/* can be written also as <Dialog open={false}>*/}
          <DialogContent className='bg-white text-black p-0 overflow-hidden'>
@@ -62,7 +66,21 @@ const IntialModal = () => {
                 <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
                  <div className='space-y-8 px-6'>
                    <div className='flex items-center justify-center text-center '>
-                       TODO: Image Upload
+                       <FormField
+                       control={form.control}
+                       name='imageUrl'
+                       render={({field})=>(
+                        <FormItem>
+                            <FormControl>
+                                <FileUpload
+                                  endpoint='severImage'
+                                  value={field.value}
+                                  onChange={field.onChange}
+                                /> 
+                           </FormControl>
+                        </FormItem>
+                       )}
+                       />
                    </div>
 
                    <FormField
@@ -86,6 +104,7 @@ const IntialModal = () => {
                               {...field}
                             />
                          </FormControl>
+                         <FormMessage/>
                         </FormItem>
                     )}
                    />
