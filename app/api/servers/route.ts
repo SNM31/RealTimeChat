@@ -11,20 +11,30 @@ export async function POST(req:Request) {
       if(!profile){
         return new NextResponse("Unauthorized",{status:401})
       }
-      const server= await db.server.create({
-        data:{
-          profileId:profile.id,
+      const server = await db.server.create({
+        data: {
+          profileId: profile.id,
           name,
           imageUrl,
-          inviteCode:uuidv4(),
-          channels:{
-            create:[{name:'general',profileId:profile.id}]
+          inviteCode: uuidv4(),
+          channels: {
+            create: [
+              { name: "general", profileId: profile.id }
+            ]
           },
-          members:{
-            create:[{profileId:profile.id,role:MemberRole.ADMIN}]
+          members: {
+            create: [
+              { profileId: profile.id, role: MemberRole.ADMIN }
+            ]
           }
+        },
+        include: {
+          members: true, // Include members in the result
+          channels: true // Include channels in the result
         }
-      })
+      });
+      
+  
       return NextResponse.json(server)
     }
     catch(error)
